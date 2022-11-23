@@ -1,5 +1,5 @@
 # JsonToPSClass
-This is an attempt to convert PSObject to Powershell Class.
+This is an attempt to convert PSCustomObject to Powershell Class.
 I made this because i was tired to to convert json into PS Classes manually, so i could later cast them into a custom type.
 The main purpose, for me, is to do something like this `` [MyCustomType]($SomeJson | ConvertFrom-Json)``
 
