@@ -214,7 +214,7 @@ Class Entry {
                 } catch {
                     ## on créer un tableau qui contiendra
                     ## les offset de debut ainsi que la longueur qu'on souhaite delete
-                    $toremove = $_.exception.GetBaseException().Errors.extent | Select-Object StartOffset,@{l='StringLength';e={$_.text.length+1}}
+                    $toremove = @($_.exception.GetBaseException().Errors.extent | Select-Object StartOffset,@{l='StringLength';e={$_.text.length+1}})
                     ## on commence par la fin... c'est mieux
                     $toremove[$toremove.Length..0] | ForEach-Object { $zap = $zap.remove($_.startoffset,$_.stringLength)}
                     return $zap
