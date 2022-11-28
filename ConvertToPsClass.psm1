@@ -27,6 +27,13 @@ function ConvertTo-PSClass {
 }
 
 
+Class Duplicate {
+    [String]$Name
+    [String[]]$Properties
+    [Int]$PropertiesCount
+    [String]$AsString
+}
+
 
 Class Entry {
     [String]$Name
@@ -199,6 +206,7 @@ Class Entry {
     [string] ToString () {
         $Plop = "`n`t## Place your Custom Method(s) below`n`t## ToString(){}"
         $base = 'Class {0} {1} {2} {3}' -f $this.Name,("{`n`t" + $($this.Properties -join "`n`t") + "`n"), $plop, "`n}"
+        
         if ( $this.HasChild() ) {
             $zou = @()
             foreach ( $child in $this.child) {
@@ -226,20 +234,63 @@ Class Entry {
             return $($($zou -join "`n`n") + "`n" +$base)
         }
 
+        return $base
+    }
+
+    [string] ToString ([Bool]$Recurse) {
+        $Plop = "`n`t## Place your Custom Method(s) below`n`t## ToString(){}"
+        $base = 'Class {0} {1} {2} {3}' -f $this.Name,("{`n`t" + $($this.Properties -join "`n`t") + "`n"), $plop, "`n}"
+        
+        If ( $Recurse ) {
+
+            if ( $this.HasChild() ) {
+                $zou = @()
+                foreach ( $child in $this.child) {
+                    $zou += $Child.ToString()
+                }
+
+                if ( $this.IsRoot) {
+
+                    $zap = $($($zou -join "`n`n") + "`n" +$base)
+                    try {
+                        ## si on a des classes en double le Scriptblock
+                        ## va throw, et on peut recup les extent a delete
+                        $null = [scriptblock]::create($zap)
+                        return $zap
+                    } catch {
+                        ## on créer un tableau qui contiendra
+                        ## les offset de debut ainsi que la longueur qu'on souhaite delete
+                        $toremove = @($_.exception.GetBaseException().Errors.extent | Select-Object StartOffset,@{l='StringLength';e={$_.text.length+1}})
+                        ## on commence par la fin... c'est mieux
+                        $toremove[$toremove.Length..0] | ForEach-Object { $zap = $zap.remove($_.startoffset,$_.stringLength)}
+                        return $zap
+                    }
+                }
+
+                return $($($zou -join "`n`n") + "`n" +$base)
+            }
+        }
 
         return $base
     }
 
     ## This is not called directly but this is the real logic to find duplicates..
-    hidden [Dictionary[[string],List[Entry]]] TraverseForDuplicates ([Dictionary[[string],[List[Entry]]]]$Duplicates) {
+    hidden [Dictionary[[string],[List[Duplicate]]]] TraverseForDuplicates ([Dictionary[[string],[List[Duplicate]]]]$Duplicates) {
 
         if ( $this.HasChild() ) {
             foreach ( $child in $this.Child) {
 
+                $tmp = [Duplicate]@{
+                    Name = $child.Name
+                    Properties = $Child.Properties
+                    PropertiesCount = $Child.Properties.count
+                    AsString = $Child.ToString($false)
+                }
+
                 if ( -not $Duplicates.ContainsKey($Child.name) ) {
-                    $Duplicates.add($child.Name, $Child)
+                    $Duplicates.add($child.Name, $tmp)
                 } else {
-                    $Duplicates[$child.Name].add($child)
+                    $Duplicates[$child.Name].add($tmp)
                 }
                 $child.TraverseForDuplicates($Duplicates)
             }
@@ -255,7 +306,7 @@ Class Entry {
 
         ## contains all entries. Key is the name of the class, and the value is a list of actuals object
         ## so if you do : $Duplicates['MySubClass'].count this will give us the 
-        $Duplicates = $this.TraverseForDuplicates([Dictionary[[string],List[Entry]]]@{})
+        $Duplicates = $this.TraverseForDuplicates([Dictionary[[string],[List[Duplicate]]]]@{})
 
         If ( $Duplicates.count -eq 0 ) {
             return $null
@@ -264,7 +315,7 @@ Class Entry {
         $string = $null
         foreach( $key in $Duplicates.getenumerator() ) {
             if ( $Key.Value.Count -gt 1 ) {
-                $string = $string + $Key.Key + ', existe: ' + $key.Value.count + 'x`n`n'
+                $string = $string + $Key.Key + ", existe: " + $key.Value.count + "x`r`r"
             }
         }
 
@@ -272,5 +323,3 @@ Class Entry {
 
     }
 }
-
-
