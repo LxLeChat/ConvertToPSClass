@@ -1,4 +1,6 @@
 
+using namespace system.Collections.Generic;
+
 function ConvertTo-PSClass {
     [CmdletBinding()]
     param (
@@ -227,4 +229,48 @@ Class Entry {
 
         return $base
     }
+
+    ## This is not called directly but this is the real logic to find duplicates..
+    hidden [Dictionary[[string],List[Entry]]] TraverseForDuplicates ([Dictionary[[string],[List[Entry]]]]$Duplicates) {
+
+        if ( $this.HasChild() ) {
+            foreach ( $child in $this.Child) {
+
+                if ( -not $Duplicates.ContainsKey($Child.name) ) {
+                    $Duplicates.add($child.Name, $Child)
+                } else {
+                    $Duplicates[$child.Name].add($child)
+                }
+                $child.TraverseForDuplicates($Duplicates)
+            }
+        }
+
+        return $Duplicates
+    }
+
+    ## this is called to find duplicates, at the moment it will display a string
+    ## listing all duplicates, and how many times this class is present
+    [string] FindDuplicates () {
+        if ( -not $this.IsRoot) { throw "Not implemented"}
+
+        ## contains all entries. Key is the name of the class, and the value is a list of actuals object
+        ## so if you do : $Duplicates['MySubClass'].count this will give us the 
+        $Duplicates = $this.TraverseForDuplicates([Dictionary[[string],List[Entry]]]@{})
+
+        If ( $Duplicates.count -eq 0 ) {
+            return $null
+        }
+
+        $string = $null
+        foreach( $key in $Duplicates.getenumerator() ) {
+            if ( $Key.Value.Count -gt 1 ) {
+                $string = $string + $Key.Key + ', existe: ' + $key.Value.count + 'x`n`n'
+            }
+        }
+
+        return $string
+
+    }
 }
+
+
