@@ -312,14 +312,14 @@ Class Entry {
             return $null
         }
 
-        $string = $null
+        $string = @()
         foreach( $key in $Duplicates.getenumerator() ) {
             if ( $Key.Value.Count -gt 1 ) {
-                $string = $string + $Key.Key + ", existe: " + $key.Value.count + "x`r`r"
+                $string += $Key.Key + ", existe: " + $key.Value.count + "x"
             }
         }
 
-        return $string
+        return ($string -join "`r`n")
 
     }
 }
