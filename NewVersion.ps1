@@ -74,33 +74,37 @@ Class Property {
 
     [Void] AddAttribute ([BasicAttributes]$Attribute) {
         ## must be an attribute in 1..5
-        if ( -not $Attribute -in 1..5) {
+        if ( -not ($Attribute -in 1..5) ) {
             throw "Attribute must be in 1..5"
         }
+        $this.Attribute = '[{0}()]' -f $Attribute.ToString()
     }
 
     ## for ValidateCount,ValidateLength,ValidateRange
     [Void] AddAttribute ([BasicAttributes]$Attribute,[int]$Start,[Int]$End) {
         ## must be an attribute in 6..8
-        if ( -not $Attribute -in 6..8) {
+        if ( -not ($Attribute -in 6..8) ) {
             throw "Attribute must be in 6..8"
         }
+        $this.Attribute = '[{0}({1}..{2})]' -f $Attribute.ToString(), $start, $end
     }
 
     ## for ValidateSet
     [Void] AddAttribute ([BasicAttributes]$Attribute,[Array]$Set) {
         ## must be an attribute in 9
-        if ( -not $Attribute -eq 9) {
+        if ( -not ($Attribute -eq 9) ) {
             throw "Attribute must be 9"
         }
+        $this.Attribute = '[{0}("{1}")]' -f $Attribute.ToString(), $($set -join '","')
     }
 
     ## for ValidatePattern
     [Void] AddAttribute ([BasicAttributes]$Attribute,[String]$Pattern) {
         ## must be an attribute in 10
-        if ( -not $Attribute -eq 10) {
+        if ( -not ($Attribute -eq 10) ) {
             throw "Attribute must be 10"
         }
+        $this.Attribute = '[{0}("{1}")]' -f $Attribute.ToString(), $Pattern
     }
 
 
