@@ -393,6 +393,8 @@ Class Entry {
 
     ## this is called to find duplicates, at the moment it will display a string
     ## listing all duplicates, and how many times this class is present
+    
+    ## Enfait retourner la liste, et tet ajouter une méthode delete sur entry.. qui fera .parent.child[n].remove
     [string] FindDuplicates () {
         if ( -not $this.IsRoot) { throw "Not implemented"}
 
