@@ -61,8 +61,8 @@ Class Property {
 
     [String] ToString () {
         $attr = $null
-        if ( $this.Attribute -ne 0 ) {
-            $attr = '[{0}()]{1}' -f $this.Attribute.ToString(), "`r`n"
+        if ( -not [string]::IsNullOrEmpty($this.Attribute) ) {
+            $attr = '{0}{1}' -f $this.Attribute.ToString(), "`r`n"
         }
 
         if ( $this.IsList ) {
@@ -106,19 +106,6 @@ Class Property {
         }
         $this.Attribute = '[{0}("{1}")]' -f $Attribute.ToString(), $Pattern
     }
-
-
-    ## Attribute list that we coul add ...
-    # [AllowNull()]
-    # [AllowEmptyString()]
-    # [AllowEmptyCollection()]
-    # [ValidateNotNull()]
-    # [ValidateNotNullOrEmpty()]
-    # [ValidateCount(1,5)]
-    # [ValidateLength(1,10)]
-    # [ValidatePattern("[0-9][0-9][0-9][0-9]")]
-    # [ValidateRange(0,10)]
-    # [ValidateSet("Low", "Average", "High")]
 
 }
 
@@ -231,7 +218,8 @@ Class Entry {
 
     ## called when property is a PSCustomObject
     [void] SetArrayNullObjectProperty ([PSNoteProperty]$NoteProperty) {
-        $this.Properties += $('[Object[]]${0}' -f $NoteProperty.Name)
+        # $this.Properties += $('[Object[]]${0}' -f $NoteProperty.Name)
+        $this.Properties += [Property]::new($NoteProperty.Name,'Object',$True)
     }
     
     ## called when property is a PSCustomObject
