@@ -26,14 +26,6 @@ function ConvertTo-PSClass {
     }
 }
 
-
-Class Duplicate {
-    [String]$Name
-    [String[]]$Properties
-    [Int]$PropertiesCount
-    [String]$AsString
-}
-
 Enum BasicAttributes {
     AllowNull = 1
     AllowEmptyString = 2
@@ -46,6 +38,15 @@ Enum BasicAttributes {
     ValidateSet = 9
     ValidatePattern = 10
 }
+
+Class Duplicate {
+    [String]$Name
+    [String[]]$Properties
+    [Int]$PropertiesCount
+    [String]$AsString
+}
+
+
 
 Class Property {
     [String]$Name
