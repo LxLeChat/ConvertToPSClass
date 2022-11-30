@@ -6,6 +6,9 @@ The main purpose, for me, is to do something like this `` [MyCustomType]($SomeJs
 # Comment
 This is not perfect, and the are many caveats that we will see after some examples. Maybe there are better ways to do this
 
+## Enum
+An enum is available in the psm1. This enum will be used when you want to add an attribute to a property. At the moment you need to load it manually.
+i havent yet written a manifest so it will not be available in your console when you import the module
 
 # Usage
 Load the module ``Import-Module .\convertToPSClass.psm1``
@@ -45,7 +48,8 @@ $MyEntry.properties
 [Int[]]$AnArrayOfIntegers
 
 ## Add a new property
-$MyEntry.Properties += '[String[]]$MyNewProperty'
+## [property] -> new -> Name, Type, IsList
+$MyEntry.Properties += [Property]::new("MyNewProperty","String",$True)
 
 ## Turn into a string
 $MyEntry.ToString()
@@ -61,7 +65,7 @@ Class MyCustomObject {
 }
 ```
 
-## Hiddent proeprties
+## Hidden properties
 An entry contains some hidden properties:
 ``Child``, if for example one property of your object is a PSCustomObject, or an array of PSCustomobject.
 ``Parent``, a ``Child`` entry has a parent.. it might come handy sometime in the futur...
