@@ -11,8 +11,9 @@ An enum is available in the psm1. This enum will be used when you want to add an
 i havent yet written a manifest so it will not be available in your console when you import the module
 
 # Usage
-Load the module ``Import-Module .\convertToPSClass.psm1``
+Load the module ``Import-Module .\convertToPSClass.psd1``
 Then convert to a PS Class and output as a string
+
 ```Powershell
 #Basic PSCustomobject
 $MyObject = [PSCustomObject]@{
