@@ -104,3 +104,9 @@ You can do the following to find the class (sorry in french, but it says: Prop3 
 $error[0].Exception.getBaseException()
 La propriété Prop3 est introuvable pour l’objet pattern. La propriété disponible est la suivante : [Prop1 <System.Int32>] , [Prop2 <System.String>]
 ```
+
+## Duplicate classes
+When ``-AsString`` is used, the ``ToString()`` method will remove any duplicate classes. To do so, we create a scriptblock, and if any errors are raised it's likely due to duplicate classes. We then explore the error, get problematic extent, and remove them. This is not very accurate but it's the best i managed :)
+
+## Notes about importing the module
+In order to have the classes & enums avaible in the console when importing the module, classes & enums are in seperate ps1 file, wich are then referenced in the ``ScriptToProcess`` in the psd1 file.
