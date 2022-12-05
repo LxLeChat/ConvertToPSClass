@@ -4,11 +4,7 @@ I made this because i was tired to to convert json into PS Classes manually, so 
 The main purpose, for me, is to do something like this `` [MyCustomType]($SomeJson | ConvertFrom-Json)``
 
 # Comment
-This is not perfect, and the are many caveats that we will see after some examples. Maybe there are better ways to do this
-
-## Enum
-An enum is available in the psm1. This enum will be used when you want to add an attribute to a property. At the moment you need to load it manually.
-i havent yet written a manifest so it will not be available in your console when you import the module
+This is not perfect, and there are many caveats that we will see after some examples. Maybe there are better ways to do this
 
 # Usage
 Load the module ``Import-Module .\convertToPSClass.psd1``
@@ -64,6 +60,23 @@ Class MyCustomObject {
         ## Place your Custom Method(s) below
         ## ToString(){}
 }
+```
+
+## Adding Attributes
+You can add attributes to your properties, using the ``BasicAttributes`` enum and the ``AddAttribute`` Method on a property
+with the above example
+```Powershell
+$MyEntry.Properties[0].AddAttributes([BasicAttributes]::AllowNull)
+
+Name                  Type IsList Attribute
+----                  ---- ------ ---------
+MyPropertyIsAnInteger Int   False [AllowNull()]
+
+## if we convert our property to a string we will get the following
+$MyEntry.Properties[0].ToString()
+
+[AllowNull()]
+[Int]$MyPropertyIsAnInteger
 ```
 
 ## Hidden properties
