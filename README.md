@@ -63,7 +63,7 @@ Class MyCustomObject {
 ```
 
 ## Adding Attributes
-You can add attributes to your properties, using the ``BasicAttributes`` enum and the ``AddAttribute`` Method on a property
+You can add and attribute to your properties, using the ``BasicAttributes`` enum and the ``AddAttribute`` Method on a property
 with the above example
 ```Powershell
 $MyEntry.Properties[0].AddAttributes([BasicAttributes]::AllowNull)
